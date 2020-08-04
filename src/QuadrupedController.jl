@@ -1,5 +1,11 @@
 module QuadrupedController
 
-# Write your package code here.
+struct Controller
+    swingparams
+    stanceparams
+    gaitparams
+    mvref
+    jointangles
+end
 
 end
