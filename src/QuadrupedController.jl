@@ -1,17 +1,17 @@
+__precompile__() # this module is safe to precompile
 module QuadrupedController
+using PyCall
 
-using StaticArrays
+export Configuration, four_legs_inverse_kinematics
 
-struct Controller
-    swingparams
-    stanceparams
-    gaitparams
-    mvref
-    jointangles::SMatrix{3, 4, Float64, 12}
-    function Controller()
+const Configuration = PyNULL()
+const four_legs_inverse_kinematics = PyNULL()
 
-        new(nothing, nothing, nothing, nothing, zeros(SMatrix{3, 4, Float64}))
-     end
+function __init__()
+    pushfirst!(PyVector(pyimport("sys")."path"), @__DIR__)    # in order to load a Python module from the current directory
+
+    copy!(Configuration, pyimport("Config").Configuration)
+    copy!(four_legs_inverse_kinematics, pyimport("Kinematics").four_legs_inverse_kinematics)
 end
 
 end
