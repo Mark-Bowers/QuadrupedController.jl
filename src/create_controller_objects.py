@@ -3,8 +3,8 @@ import numpy as np
 from common.Controller import Controller
 from common.Command import Command
 from common.State import State
-from pupper.Config import Configuration
-from pupper.Kinematics import four_legs_inverse_kinematics
+from Config import Configuration
+from Kinematics import four_legs_inverse_kinematics
 
 
 def create_controller_objects(yaw_rate = 0.0):
