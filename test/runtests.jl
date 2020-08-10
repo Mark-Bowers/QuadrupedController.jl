@@ -5,11 +5,14 @@ using PyCall
 
 @testset "QuadrupedController.jl" begin
     @test QuadrupedController != PyNULL()
-    @test size(names(QuadrupedController)) == (4,)
-    @test names(QuadrupedController)[1] == :Configuration
-    @test names(QuadrupedController)[2] == :Controller
-    @test names(QuadrupedController)[3] == :QuadrupedController
-    @test names(QuadrupedController)[4] == :four_legs_inverse_kinematics
+    @test size(names(QuadrupedController)) == (7,)
+    @test names(QuadrupedController)[1] == :Command
+    @test names(QuadrupedController)[2] == :Configuration
+    @test names(QuadrupedController)[3] == :Controller
+    @test names(QuadrupedController)[4] == :QuadrupedController
+    @test names(QuadrupedController)[5] == :State
+    @test names(QuadrupedController)[6] == :create_controller_objects
+    @test names(QuadrupedController)[7] == :four_legs_inverse_kinematics
 end
 
 @testset "Configuration" begin
@@ -40,4 +43,22 @@ end
     @test controller.config.ABDUCTION_OFFSET == 0.03
     @test controller.gait_controller.subphase_ticks(49) == 14
     @test controller.gait_controller.subphase_ticks(50) == 0
+end
+
+@testset "Command" begin
+    @test Command != PyNULL()
+    @test Command.__module__ == "Command"
+    @test string(Command) == "PyObject <class 'Command.Command'>"
+
+    command = Command()
+    @test command.height == -0.16
+end
+
+@testset "State" begin
+    @test State != PyNULL()
+    @test State.__module__ == "State"
+    @test string(State) == "PyObject <class 'State.State'>"
+
+    state = State()
+    #@test state.height == -0.16
 end
