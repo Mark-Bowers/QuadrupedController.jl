@@ -18,7 +18,7 @@ class Controller:
     def __init__(
         self,
         config,
-        inverse_kinematics #,
+        inverse_kinematics,
     ):
         self.config = config
 

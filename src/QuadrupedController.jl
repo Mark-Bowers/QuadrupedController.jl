@@ -16,12 +16,15 @@ const create_controller_objects = PyNULL()
 
 function __init__()
     # Install required packages, if not yet installed
+    """
+    Conda.add_channel("conda-forge")
     if !haskey(Conda._installed_packages_dict(), "numpy")
         Conda.add("numpy")
     end
     if !haskey(Conda._installed_packages_dict(), "transforms3d")
         Conda.add("transforms3d")
     end
+    """
 
     pushfirst!(PyVector(pyimport("sys")."path"), @__DIR__)    # in order to load a Python module from the current directory
 
