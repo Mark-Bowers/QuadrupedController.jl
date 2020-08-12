@@ -4,7 +4,7 @@ module QuadrupedController
 using Conda
 using PyCall
 
-export Configuration, four_legs_inverse_kinematics, Controller, State, Command, create_controller_objects
+export Configuration, four_legs_inverse_kinematics, Controller, State, Command
 
 # https://github.com/JuliaPy/PyCall.jl#using-pycall-from-julia-modules
 const Configuration = PyNULL()
@@ -12,7 +12,6 @@ const four_legs_inverse_kinematics = PyNULL()
 const Controller = PyNULL()
 const State = PyNULL()
 const Command = PyNULL()
-const create_controller_objects = PyNULL()
 
 function __init__()
     # Install required packages, if not yet installed
@@ -33,7 +32,6 @@ function __init__()
     copy!(Controller, pyimport("Controller").Controller)
     copy!(State, pyimport("State").State)
     copy!(Command, pyimport("Command").Command)
-    copy!(create_controller_objects, pyimport("create_controller_objects").create_controller_objects)
 end
 
 end

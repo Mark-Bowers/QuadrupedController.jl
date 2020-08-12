@@ -5,14 +5,13 @@ using PyCall
 
 @testset "QuadrupedController.jl" begin
     @test QuadrupedController != PyNULL()
-    @test size(names(QuadrupedController)) == (7,)
+    @test size(names(QuadrupedController)) == (6,)
     @test names(QuadrupedController)[1] == :Command
     @test names(QuadrupedController)[2] == :Configuration
     @test names(QuadrupedController)[3] == :Controller
     @test names(QuadrupedController)[4] == :QuadrupedController
     @test names(QuadrupedController)[5] == :State
-    @test names(QuadrupedController)[6] == :create_controller_objects
-    @test names(QuadrupedController)[7] == :four_legs_inverse_kinematics
+    @test names(QuadrupedController)[6] == :four_legs_inverse_kinematics
 end
 
 @testset "Configuration" begin
@@ -56,9 +55,9 @@ end
 
 @testset "State" begin
     @test State != PyNULL()
-    @test State.__module__ == "State"
-    @test string(State) == "PyObject <class 'State.State'>"
+    @test State.__module__ == "common.State"
+    @test string(State) == "PyObject <class 'common.State.State'>"
 
     state = State()
-    #@test state.height == -0.16
+    @test state.height == -0.16
 end
