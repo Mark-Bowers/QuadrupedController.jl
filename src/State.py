@@ -1,1 +1,1 @@
-from common.State import BehaviorState  , State
+from common.State import BehaviorState, State
