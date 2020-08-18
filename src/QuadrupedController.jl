@@ -6,7 +6,8 @@ A Julia wrapper for the code controller for Stanford Pupper, a Raspberry Pi-base
 module QuadrupedController
 export Configuration, Command
 export Robot, run!, behavior_state, behavior_state_string
-export toggle_activate, toggle_trot, toggle_hop
+export toggle_activate, toggle_trot, toggle_hop, turn_left, turn_right,
+        increase_pitch, decrease_pitch
 
 using DocStringExtensions
 @template (FUNCTIONS, METHODS, MACROS) =
@@ -193,5 +194,57 @@ function toggle_hop(robot)
     run!(robot)
     println(" to ", behavior_state_string(robot.state))
 end
+
+"""
+    $(SIGNATURES)
+
+Turns the robot roughly 90 degrees to the left by slowing down horizontal velocity
+to near 0 and setting a yaw_rate to a positive constant
+
+# Examples
+```julia-repl
+julia> turn_left(robot)
+Pupper marching in place:
+
+"""
+function turn_left(robot)
+   robot.command.horizontal_velocity = new_horizontal_velocity
+   robot.command.yaw_rate = left_yaw_rate
+   println("Pupper marching in place: ", robot.command.horizontal_velocity)
+   println("Pupper turning in place: ",robot.command.yaw_rate)
+end
+
+"""
+    $(SIGNATURES)
+
+Turns the robot roughly 90 degrees to the right by slowing down horizontal velocity
+to near 0 and setting a yaw_rate to a negative constant
+
+# Examples
+```julia-repl
+julia> turn_right(robot)
+Pupper marching in place:
+
+"""
+function turn_right(robot)
+   robot.command.horizontal_velocity = new_horizontal_velocity
+   robot.command.yaw_rate = right_yaw_rate
+   println("Pupper marching in place: ", robot.command.horizontal_velocity)
+   println("Pupper turning in place: ",robot.command.yaw_rate)
+end
+
+function increase_pitch(robot)
+   robot.command.pitch += 0.05
+   println("Pupper tiilting up: ", robot.command.pitch)
+end
+
+function decrease_pitch(robot)
+   robot.command.pitch -= 0.05
+   println("Pupper tiilting down: ", robot.command.pitch)
+end
+
+const left_yaw_rate = 0.4
+const right_yaw_rate = -0.4
+const new_horizontal_velocity = [0.001, 0]
 
 end
