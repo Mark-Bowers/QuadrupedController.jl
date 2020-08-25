@@ -5,17 +5,20 @@ using PyCall
 
 @testset "QuadrupedController.jl" begin
     @test QuadrupedController != PyNULL()
-    @test size(names(QuadrupedController)) == (10,)
+    @test size(names(QuadrupedController)) == (13,)
     @test names(QuadrupedController)[1] == :Command
     @test names(QuadrupedController)[2] == :Configuration
     @test names(QuadrupedController)[3] == :QuadrupedController
     @test names(QuadrupedController)[4] == :Robot
     @test names(QuadrupedController)[5] == :behavior_state
     @test names(QuadrupedController)[6] == :behavior_state_string
-    @test names(QuadrupedController)[7] == :run!
-    @test names(QuadrupedController)[8] == :toggle_activate
-    @test names(QuadrupedController)[9] == :toggle_hop
-    @test names(QuadrupedController)[10] == :toggle_trot
+    @test names(QuadrupedController)[7] == :end_turn
+    @test names(QuadrupedController)[8] == :run!
+    @test names(QuadrupedController)[9] == :toggle_activate
+    @test names(QuadrupedController)[10] == :toggle_hop
+    @test names(QuadrupedController)[11] == :toggle_trot
+    @test names(QuadrupedController)[12] == :turn_left
+    @test names(QuadrupedController)[13] == :turn_right
 end
 
 @testset "Command" begin
