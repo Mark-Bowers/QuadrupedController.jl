@@ -3,9 +3,7 @@
 ## Overview
 This repository hosts a Julia wrapper for the code controller for Stanford Pupper and Stanford Woofer, Raspberry Pi-based quadruped robots that can trot, walk, and jump.
 
-Video of pupper in action: https://youtu.be/NIjodHA78UE
-
-Project page: https://stanfordstudentrobotics.org/pupper
+Videos: https://mark-bowers.github.io/
 
 ## Installation
 From the Julia REPL use ']' key to access the package manager then add https://github.com/Mark-Bowers/QuadrupedController.jl.git.
