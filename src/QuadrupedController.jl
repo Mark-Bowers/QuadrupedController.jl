@@ -8,7 +8,7 @@ export Configuration, Command
 export Robot, run!, behavior_state, behavior_state_string
 export toggle_activate, toggle_trot, toggle_hop, turn_left, turn_right, end_turn
 
-#@time using Conda
+@time using Conda
 @time using PyCall
 
 # https://github.com/JuliaPy/PyCall.jl#using-pycall-from-julia-modules
@@ -19,15 +19,13 @@ const State = PyNULL()
 
 function __init__()
     # Install required packages, if not yet installed
-    """
-    Conda.add_channel("conda-forge")
+    # Conda.add_channel("conda-forge")
     if !haskey(Conda._installed_packages_dict(), "numpy")
         Conda.add("numpy")
     end
     if !haskey(Conda._installed_packages_dict(), "transforms3d")
         Conda.add("transforms3d")
     end
-    """
 
     pushfirst!(PyVector(pyimport("sys")."path"), @__DIR__)    # in order to load a Python module from the current directory
 
