@@ -19,7 +19,9 @@ const State = PyNULL()
 
 function __init__()
     # Install required packages, if not yet installed
-    # Conda.add_channel("conda-forge")
+    @static if !Sys.iswindows()
+        Conda.add_channel("conda-forge")
+    end
     if !haskey(Conda._installed_packages_dict(), "numpy")
         Conda.add("numpy")
     end
