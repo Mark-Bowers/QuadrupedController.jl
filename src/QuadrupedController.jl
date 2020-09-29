@@ -136,7 +136,12 @@ Toggling from REST: 0 to DEACTIVATED: -1
 """
 function toggle_activate(robot)
     print("Toggling from ", behavior_state_string(robot.state))
-    robot.command.activate_event = 1
+    try
+        robot.command.activate_event = 1
+    catch
+        println("\nError: Illegal state transition in toggle_activate!")
+        return
+    end
     run!(robot)
     robot.command.activate_event = 0
     println(" to ", behavior_state_string(robot.state))
@@ -158,7 +163,12 @@ Toggling from REST: 0 to TROT: 1
 """
 function toggle_trot(robot)
     print("Toggling from ", behavior_state_string(robot.state))
-    robot.state.behavior_state = robot.controller.trot_transition_mapping[robot.state.behavior_state]
+    try
+        robot.state.behavior_state = robot.controller.trot_transition_mapping[robot.state.behavior_state]
+    catch
+        println("\nError: Illegal state transition in toggle_trot!")
+        return
+    end
     run!(robot)
     println(" to ", behavior_state_string(robot.state))
 end
@@ -179,7 +189,12 @@ Toggling from REST: 0 to HOP: 2
 """
 function toggle_hop(robot)
     print("Toggling from ", behavior_state_string(robot.state))
-    robot.state.behavior_state = robot.controller.hop_transition_mapping[robot.state.behavior_state]
+    try
+        robot.state.behavior_state = robot.controller.hop_transition_mapping[robot.state.behavior_state]
+    catch
+        println("\nError: Illegal state transition in toggle_hop!")
+        return
+    end
     run!(robot)
     println(" to ", behavior_state_string(robot.state))
 end
