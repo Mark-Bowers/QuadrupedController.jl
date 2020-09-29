@@ -35,6 +35,9 @@ julia> const normal_height = -0.16;
 julia> command = Command([0.4, 0.0], 0.5, crouch_height, 0.1)
 Command([0.4, 0.0], 0.5, -0.08, 0.1, 0.0, 0, false, false, false)
 
+julia> robot = Robot(config, command)
+Robot(PyObject <Controller.Controller object at 0x000000003E6A1130>, PyObject <common.State.State object at 0x000000003E6A1460>, Command([0.4, 0.0], 0.5, -0.08, 0.1, 0.0, 0, false, false, false))
+
 julia> robot.state.joint_angles
 3×4 Array{Float64,2}:
  0.0  0.0  0.0  0.0
