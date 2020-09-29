@@ -7,6 +7,7 @@ module QuadrupedController
 export Configuration, Command
 export Robot, run!, behavior_state, behavior_state_string
 export toggle_activate, toggle_trot, toggle_hop, turn_left, turn_right, end_turn
+export set_height!, set_pitch!, set_roll!, adjust_height!, adjust_roll!
 
 @time using Conda
 @time using PyCall
@@ -70,7 +71,7 @@ mutable struct Command # Stores movement commands
     pitch::Float64
     roll::Float64
 
-    activation::Int                     # doesn't appear to be used anywhere
+    command_interval::Float64
 
     hop_event::Bool
     trot_event::Bool
@@ -83,17 +84,17 @@ mutable struct Command # Stores movement commands
         pitch::Float64 = 0.0,
         roll::Float64 = 0.0,
 
-        activation::Int = 0,            # doesn't appear to be used anywhere
-
         hop_event::Bool = false,
         trot_event::Bool = false,
-        activate_event::Bool = false
-    ) = new(horizontal_velocity, yaw_rate, height, pitch, roll, activation, hop_event, trot_event, activate_event)
+        activate_event::Bool = false;
+
+        command_interval::Float64 = 1.0 / 30
+    ) = new(horizontal_velocity, yaw_rate, height, pitch, roll, command_interval, hop_event, trot_event, activate_event)
 end
 
 struct Robot
-    controller
-    state
+    controller              # Defined in Controller.py
+    state                   # Defined in State.py
     command::Command
 end
 
@@ -136,7 +137,12 @@ Toggling from REST: 0 to DEACTIVATED: -1
 """
 function toggle_activate(robot)
     print("Toggling from ", behavior_state_string(robot.state))
-    robot.command.activate_event = 1
+    try
+        robot.command.activate_event = 1
+    catch
+        println("\nError: Illegal state transition in toggle_activate!")
+        return
+    end
     run!(robot)
     robot.command.activate_event = 0
     println(" to ", behavior_state_string(robot.state))
@@ -158,7 +164,12 @@ Toggling from REST: 0 to TROT: 1
 """
 function toggle_trot(robot)
     print("Toggling from ", behavior_state_string(robot.state))
-    robot.state.behavior_state = robot.controller.trot_transition_mapping[robot.state.behavior_state]
+    try
+        robot.state.behavior_state = robot.controller.trot_transition_mapping[robot.state.behavior_state]
+    catch
+        println("\nError: Illegal state transition in toggle_trot!")
+        return
+    end
     run!(robot)
     println(" to ", behavior_state_string(robot.state))
 end
@@ -179,7 +190,12 @@ Toggling from REST: 0 to HOP: 2
 """
 function toggle_hop(robot)
     print("Toggling from ", behavior_state_string(robot.state))
-    robot.state.behavior_state = robot.controller.hop_transition_mapping[robot.state.behavior_state]
+    try
+        robot.state.behavior_state = robot.controller.hop_transition_mapping[robot.state.behavior_state]
+    catch
+        println("\nError: Illegal state transition in toggle_hop!")
+        return
+    end
     run!(robot)
     println(" to ", behavior_state_string(robot.state))
 end
@@ -239,16 +255,44 @@ function end_turn(robot)
     robot.command.yaw_rate = 0.0
 end
 
-"""
-function increase_pitch(robot)
-   robot.command.pitch += 0.05
-   #println("Pupper tilting up: ", robot.command.pitch)
+# Functions ported over from JoystickInterface.py
+function deadband(value, band_radius)
+    return max(value - band_radius, 0) + min(value + band_radius, 0)
 end
 
-function decrease_pitch(robot)
-   robot.command.pitch -= 0.05
-   #println("Pupper tilting down: ", robot.command.pitch)
+function clipped_first_order_filter(input, target, max_rate, tau)
+    rate = (target - input) / tau
+    return clamp(rate, -max_rate, max_rate)
 end
-"""
+
+# set commands
+set_height!(command::Command, height::Real) = (command.height = clamp(height, -0.25, -0.025))
+
+function set_pitch!(robot::Robot, pitch)
+    config  = robot.controller.config
+
+    pitch *= -config.max_pitch
+    deadbanded_pitch = deadband(pitch, config.pitch_deadband)
+    pitch_rate = clipped_first_order_filter(
+        robot.state.pitch,
+        deadbanded_pitch,
+        config.max_pitch_rate,
+        config.pitch_time_constant
+    )
+    robot.command.pitch = robot.state.pitch + robot.command.command_interval * pitch_rate
+end
+
+set_roll!(command::Command, roll::Real) = (command.roll = clamp(roll, -1.0, 1.0))
+
+# adjust commands
+function adjust_height!(robot::Robot, adjust_by::Int)
+    height = robot.state.height - robot.command.command_interval * robot.controller.config.z_speed * adjust_by
+    set_height!(robot.command, height)
+end
+
+function adjust_roll!(robot::Robot, adjust_by::Int)
+    roll = robot.state.roll + robot.command.command_interval * -robot.controller.config.roll_speed * adjust_by
+    set_roll!(robot.command, roll)
+end
 
 end
